@@ -62,11 +62,15 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Ellipse Margin="-5" Width="10" Height="10" Fill="Blue">
-                        <Ellipse.RenderTransform>
-                            <TranslateTransform X="{Binding Position.X}" Y="{Binding Position.Y}"></TranslateTransform>
-                        </Ellipse.RenderTransform>
-                    </Ellipse>
+                    <Grid Margin="-5" Width="10" Height="10">
+                        <Grid.RenderTransform>
+                            <TransformGroup>
+                                <RotateTransform Angle="{Binding Angle, Converter={StaticResource DegreeConverter}}" />
+                                <TranslateTransform X="{Binding Position.X}" Y="{Binding Position.Y}"></TranslateTransform>
+                            </TransformGroup>
+                        </Grid.RenderTransform>
+                        <Rectangle Fill="Blue"></Rectangle>
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

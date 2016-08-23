@@ -2,8 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:DeepRL"
+             xmlns:converters="clr-namespace:DeepRL.Converters"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+        <converters:DegreeConverter x:Key="DegreeConverter" />
     </Application.Resources>
 </Application>
