@@ -62,14 +62,14 @@ namespace DeepRL.Model
                 var w2p = new Vector2(0,0) - axel;
                 w1p = w1p.Rotate(-agent.Wheels.Left);
                 w2p = w2p.Rotate(agent.Wheels.Right);
-                var toMove = (w1p + w2p) * 0.5;
+                var toMove = (w1p + w2p) * 0.5 * dt;
 
-                agent.Angle -= agent.Wheels.Left;
-                agent.Angle += agent.Wheels.Right;
+                agent.Angle -= agent.Wheels.Left * dt;
+                agent.Angle += agent.Wheels.Right * dt;
                 
                 var hit = Collide(agent.Position, toMove, true, true);
 
-                if (hit == HitResult.None)
+                if (hit.Type == HitType.None)
                     agent.Position += toMove;
                 else
                 {
@@ -88,9 +88,9 @@ namespace DeepRL.Model
             {
                 foreach (var wall in Walls)
                 {
-                    var res = Raycaster.LineIntersect(position, position + ray, wall.P1, wall.P2);
+                    var res = Raycaster.LineIntersect(position, position + ray, wall.P1, wall.P2, HitType.Wall);
 
-                    if (res != HitResult.None && (minres == HitResult.None || minres.Distance > res.Distance))
+                    if (res.Type != HitType.None && (minres == HitResult.None || minres.Distance > res.Distance))
                     {
                         minres = res;
                     }
@@ -118,7 +118,7 @@ namespace DeepRL.Model
             {
                 //TODO calculate dt
                 Update(0.1);
-                Thread.Sleep(100);
+                Thread.Sleep(50);
             }
         }
 
