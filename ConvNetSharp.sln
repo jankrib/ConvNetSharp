@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalExample", "Examples\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvNetSharp.Tests", "src\ConvNetSharp.Tests\ConvNetSharp.Tests.csproj", "{78C15973-1276-48D4-BF66-B3F68FEB0350}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeepRL", "DeepRL\DeepRL.csproj", "{68CFFA29-45F0-45C4-AED1-338E9B8863A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvNetSharp.DeepQLearning", "ConvNetSharp.DeepQLearning\ConvNetSharp.DeepQLearning.csproj", "{37894F89-0841-42F8-9061-B9317F3EE00E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +51,14 @@ Global
 		{78C15973-1276-48D4-BF66-B3F68FEB0350}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78C15973-1276-48D4-BF66-B3F68FEB0350}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78C15973-1276-48D4-BF66-B3F68FEB0350}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68CFFA29-45F0-45C4-AED1-338E9B8863A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68CFFA29-45F0-45C4-AED1-338E9B8863A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68CFFA29-45F0-45C4-AED1-338E9B8863A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68CFFA29-45F0-45C4-AED1-338E9B8863A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37894F89-0841-42F8-9061-B9317F3EE00E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37894F89-0841-42F8-9061-B9317F3EE00E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37894F89-0841-42F8-9061-B9317F3EE00E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37894F89-0841-42F8-9061-B9317F3EE00E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,5 +68,6 @@ Global
 		{82699DBB-01C9-466C-8F5A-BEED6D206DC6} = {EA1186A0-0547-4D6F-9385-4BB501FA0002}
 		{3A450B85-70D8-4059-9EF0-3E1D2C5BF677} = {EA1186A0-0547-4D6F-9385-4BB501FA0002}
 		{F1BD453C-2678-40D7-96B8-1595C7F2AF65} = {EA1186A0-0547-4D6F-9385-4BB501FA0002}
+		{68CFFA29-45F0-45C4-AED1-338E9B8863A8} = {EA1186A0-0547-4D6F-9385-4BB501FA0002}
 	EndGlobalSection
 EndGlobal
