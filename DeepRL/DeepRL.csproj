@@ -56,6 +56,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Helpers\HitResult.cs" />
+    <Compile Include="Helpers\Raycaster.cs" />
     <Compile Include="Model\Agent.cs" />
     <Compile Include="Model\Fruit.cs" />
     <Compile Include="Model\Item.cs" />

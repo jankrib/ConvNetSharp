@@ -50,7 +50,7 @@ namespace DeepRL.Model
             
             _brain = new Brain(numInputs, numActions);
 
-            Wheels = _actions[1];
+            Wheels = _actions[0];
         }
 
         public struct WheelRotationSpeed

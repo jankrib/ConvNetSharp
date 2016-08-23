@@ -18,6 +18,8 @@ namespace DeepRL.Helpers
             get { return Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2)); }
         }
 
+        public static Vector2 Zero => new Vector2(0, 0);
+
         public static Vector2 operator +(Vector2 a, Vector2 b)
         {
             return new Vector2(a.X + b.X, a.Y + b.Y);

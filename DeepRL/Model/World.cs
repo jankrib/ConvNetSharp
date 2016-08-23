@@ -69,7 +69,12 @@ namespace DeepRL.Model
                 
                 var hit = Collide(agent.Position, toMove, true, true);
 
-                agent.Position += toMove;
+                if (hit == HitResult.None)
+                    agent.Position += toMove;
+                else
+                {
+                    
+                }
             }
 
             OnAfterTick();
@@ -77,15 +82,22 @@ namespace DeepRL.Model
 
         private HitResult Collide(Vector2 position, Vector2 ray, bool checkWalls, bool checkItems)
         {
+            var minres = HitResult.None;
+
             if(checkWalls)
             {
                 foreach (var wall in Walls)
                 {
-                    
+                    var res = Raycaster.LineIntersect(position, position + ray, wall.P1, wall.P2);
+
+                    if (res != HitResult.None && (minres == HitResult.None || minres.Distance > res.Distance))
+                    {
+                        minres = res;
+                    }
                 }
             }
 
-            return new HitResult();
+            return minres;
         }
 
         private bool _running = false;
