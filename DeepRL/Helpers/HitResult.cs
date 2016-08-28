@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DeepRL.Model;
 
 namespace DeepRL.Helpers
 {
@@ -22,11 +23,20 @@ namespace DeepRL.Helpers
 
         public HitType Type { get; }
 
+        public Item Item { get; set; }
+
         public HitResult(double ua, Vector2 up, HitType type)
+            :this(ua, up, type, null)
+        {
+            
+        }
+
+        public HitResult(double ua, Vector2 up, HitType type, Item item)
         {
             Distance = ua;
             IntersectionPoint = up;
             Type = type;
+            Item = item;
         }
 
         public static HitResult None => new HitResult(double.NaN, Vector2.Zero, HitType.None);

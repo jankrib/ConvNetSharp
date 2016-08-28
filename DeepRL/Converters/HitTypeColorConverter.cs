@@ -21,9 +21,9 @@ namespace DeepRL.Converters
                 switch (hitType.Value)
                 {
                     case HitType.Fruit:
-                        return Brushes.Green;
+                        return Brushes.OrangeRed;
                     case HitType.Poison:
-                        return Brushes.Red;
+                        return Brushes.LawnGreen;
                     default:
                         return Brushes.Black;
                 }

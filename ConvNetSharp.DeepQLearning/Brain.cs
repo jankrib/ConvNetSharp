@@ -3,55 +3,6 @@ using System.Collections.Generic;
 
 namespace ConvNetSharp.DeepQLearning
 {
-    public class Experience
-    {
-        public double[] State0 { get; set; }
-        public int Action0 { get; set; }
-        public double Reward0 { get; set; }
-        public double[] State1 { get; set; }
-    }
-
-    public class Averager
-    {
-        private readonly int _maxSize;
-        private readonly int _minSize;
-
-        List<double> _numbers = new List<double>();
-        private double _sum = 0;
-
-        public Averager(int maxSize, int minSize)
-        {
-            _maxSize = maxSize;
-            _minSize = minSize;
-        }
-
-        public void Add(double number)
-        {
-            _numbers.Add(number);
-            _sum += number;
-
-            if (_numbers.Count > _maxSize)
-            {
-                _sum -= _numbers[0];
-                _numbers.RemoveAt(0);
-            }
-        }
-
-        public double GetAverage()
-        {
-            if (_numbers.Count < _minSize)
-                return -1;
-            else
-                return _sum/_numbers.Count;
-        }
-
-        public void Reset()
-        {
-            _numbers.Clear();
-            _sum = 0;
-        }
-    }
-
     public class Brain
     {
         private readonly int _netInputs;
@@ -62,7 +13,7 @@ namespace ConvNetSharp.DeepQLearning
         private readonly double _epsilonMin = 0.05;
         private readonly double _epsilonTestTime = 0.01;
 
-        private readonly int _experienceSize = 30000;
+        private readonly int _experienceSize = 30000; //should work with 30000
         private int _forwardPasses;
 
         private double _gamma = 0.8;
@@ -76,7 +27,7 @@ namespace ConvNetSharp.DeepQLearning
         private readonly Random _random = new Random(0);
 
         private double _startLearnThreshold;
-        private List<double> _stateWindow;
+        private List<double[]> _stateWindow;
         private List<double[]> _netWindow;
         private List<double> _rewardWindow;
 
@@ -99,14 +50,14 @@ namespace ConvNetSharp.DeepQLearning
 
             _windowSize = Math.Max(_temporalWindow, _windowSize);
 
-            _stateWindow = new List<double>(_windowSize);
+            _stateWindow = new List<double[]>(_windowSize);
             _netWindow = new List<double[]>(_windowSize);
             _actionWindow = new List<int>(_windowSize);
             _rewardWindow = new List<double>(_windowSize);
 
             for (int i = 0; i < _windowSize; i++)
             {
-                _stateWindow.Add(0);
+                _stateWindow.Add(new double[] { });
                 _netWindow.Add(new double[] {});
                 _actionWindow.Add(0);
                 _rewardWindow.Add(0);
@@ -119,7 +70,7 @@ namespace ConvNetSharp.DeepQLearning
             _net.AddLayer(new InputLayer(1, 1, _numStates));
             _net.AddLayer(new FullyConnLayer(50, Activation.Relu));
             _net.AddLayer(new FullyConnLayer(50, Activation.Relu));
-            _net.AddLayer(new SoftmaxLayer(_numActions));
+            _net.AddLayer(new RegressionLayer(_numActions));
 
 
             _trainer = new Trainer(_net);
@@ -211,7 +162,7 @@ namespace ConvNetSharp.DeepQLearning
             _netWindow.RemoveAt(0);
             _netWindow.Add(netInput);
             _stateWindow.RemoveAt(0);
-            _stateWindow.AddRange(inputArray);
+            _stateWindow.Add(inputArray);
             _actionWindow.RemoveAt(0);
             _actionWindow.Add(action);
 
@@ -277,9 +228,11 @@ namespace ConvNetSharp.DeepQLearning
         {
             var w = new List<double>(xt);
 
+            var n = _windowSize;
+
             for (var k = 0; k < _temporalWindow; k++)
             {
-                w.AddRange(_stateWindow);
+                w.AddRange(_stateWindow[n - 1 - k]);
 
                 var action1ofk = new double[_numActions];
 

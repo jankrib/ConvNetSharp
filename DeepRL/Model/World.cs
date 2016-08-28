@@ -35,22 +35,20 @@ namespace DeepRL.Model
             Walls.Add(new Wall(new Vector2(Width - MARGIN, Height - MARGIN), new Vector2(MARGIN, Height - MARGIN)));
             Walls.Add(new Wall(new Vector2(MARGIN, Height - MARGIN), new Vector2(MARGIN, MARGIN)));
 
-            AddFruit();
-            AddFruit();
-            AddFruit();
-            AddFruit();
-            AddFruit();
-
-            AddPoison();
-            AddPoison();
-            AddPoison();
-            AddPoison();
+            Walls.Add(new Wall(new Vector2(Width * 0.3, 0.7 * Height), new Vector2(Width * 0.3, 0.3 * Height)));
+            Walls.Add(new Wall(new Vector2(Width * 0.7, 0.7 * Height), new Vector2(Width * 0.7, 0.3 * Height)));
 
             AddAgent();
         }
 
         public void Update(double dt)
         {
+            if (Fruits.Count < 20)
+                AddFruit();
+
+            if (Poisons.Count < 20)
+                AddPoison();
+
             foreach (var agent in Agents)
             {
                 //Update inputs
@@ -96,11 +94,19 @@ namespace DeepRL.Model
                 
                 var hit = Collide(agent.Position, toMove, true, true);
 
-                if (hit.Type == HitType.None)
-                    agent.Position += toMove;
-                else
+                switch (hit.Type)
                 {
-                    
+                    case HitType.None:
+                        agent.Position += toMove;
+                        break;
+                    case HitType.Fruit:
+                        agent.DigestionSignal += 5;
+                        Fruits.Remove((Fruit)hit.Item);
+                        break;
+                    case HitType.Poison:
+                        agent.DigestionSignal += -6;
+                        Poisons.Remove((Poison)hit.Item);
+                        break;
                 }
 
                 //Learn
@@ -128,14 +134,14 @@ namespace DeepRL.Model
             {
                 foreach (var fruit in Fruits)
                 {
-                    var res = Raycaster.LinePointIntersect(position, position + ray, fruit.Position, fruit.Radius, HitType.Fruit);
+                    var res = Raycaster.LinePointIntersect(position, position + ray, fruit, HitType.Fruit);
 
                     minres = HitResult.Best(minres, res);
                 }
                 foreach (var poison in Poisons)
                 {
-                    var res = Raycaster.LinePointIntersect(position, position + ray, poison.Position, poison.Radius, HitType.Poison);
-
+                    var res = Raycaster.LinePointIntersect(position, position + ray, poison, HitType.Poison);
+                    
                     minres = HitResult.Best(minres, res);
                 }
             }
@@ -160,7 +166,7 @@ namespace DeepRL.Model
             while (_running)
             {
                 //TODO calculate dt
-                Update(0.1);
+                Update(0.5);
                 Thread.Sleep(10);
             }
         }
@@ -176,23 +182,47 @@ namespace DeepRL.Model
             var poison = new Poison(position);
             Poisons.Add(poison);
 
+            if (!CheckIfItemIsClear(poison))
+                return null;
+
             return poison;
         }
         public Fruit AddFruit()
         {
             Vector2 position = GetRandomPosition();
             var fruit = new Fruit(position);
+
+            if (!CheckIfItemIsClear(fruit))
+                return null;
+
             Fruits.Add(fruit);
 
             return fruit;
         }
         public Agent AddAgent()
         {
-            Vector2 position = GetRandomPosition();
-            var agent = new Agent(position);
+            Agent agent;
+            do
+            {
+                Vector2 position = GetRandomPosition();
+                agent = new Agent(position);
+            } while (!CheckIfItemIsClear(agent));
+            
             Agents.Add(agent);
 
             return agent;
+        }
+
+        private bool CheckIfItemIsClear(Item item)
+        {
+            foreach (var wall in Walls)
+            {
+                var hit = Raycaster.LinePointIntersect(wall.P1, wall.P2, item, HitType.Wall);
+                if (hit.Type != HitType.None)
+                    return false;
+            }
+
+            return true;
         }
 
         private Vector2 GetRandomPosition()

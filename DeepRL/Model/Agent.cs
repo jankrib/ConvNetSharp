@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ConvNetSharp;
+using ConvNetSharp.DeepQLearning;
 using DeepRL.Helpers;
 
 namespace DeepRL.Model
@@ -18,6 +20,7 @@ namespace DeepRL.Model
                 return _actions[_actionIndex];
             }  
         } 
+
 
         public Eye[] Eyes { get; set; }
 
@@ -40,6 +43,8 @@ namespace DeepRL.Model
 
         public double Speed { get; set; } = 5;
 
+        public double DigestionSignal { get; set; }
+
         private WheelRotationSpeed[] _actions = new[]
         {
             new WheelRotationSpeed(1, 1),
@@ -57,7 +62,7 @@ namespace DeepRL.Model
             Eyes = new Eye[9];
             for (var k = 0; k < 9; k++)
             {
-                Eyes[k] = new Eye((k - 3) * 0.25);
+                Eyes[k] = new Eye((k - 4) * 0.25);
             }
 
             var numInputs = 27; // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
@@ -99,10 +104,21 @@ namespace DeepRL.Model
             {
                 var e = Eyes[i];
                 // agents dont like to see walls, especially up close
-                proximity_reward += e.HitType == HitType.Wall ? e.SensedProximity / e.MaxRange : 1.0;
+                if (e.HitType == HitType.Wall)
+                {
+                    if (e.SensedProximity < e.MaxRange*0.1)
+                        proximity_reward += -5; //Punish if extra close to wall
+                    else
+                        proximity_reward += e.SensedProximity/e.MaxRange;
+                }
+                else
+                    proximity_reward += 1.0;
             }
             proximity_reward = proximity_reward / num_eyes;
-            proximity_reward = Math.Min(1.0, proximity_reward * 2);
+
+            
+
+            //proximity_reward = Math.Min(1.0, proximity_reward * 2);
 
             // agents like to go straight forward
             var forward_reward = 0.0;
@@ -110,10 +126,10 @@ namespace DeepRL.Model
                 forward_reward = 0.1 * proximity_reward;
 
             // agents like to eat good things
-            //var digestion_reward = this.digestion_signal;
-            //this.digestion_signal = 0.0;
+            var digestion_reward = DigestionSignal;
+            DigestionSignal = 0.0;
 
-            var reward = proximity_reward + forward_reward;// + digestion_reward;
+            var reward = proximity_reward + forward_reward + digestion_reward;
 
             // pass to brain for learning
             _brain.Backward(reward);

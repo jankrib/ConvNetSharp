@@ -3,17 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DeepRL.Model;
 
 namespace DeepRL.Helpers
 {
     public static class Raycaster
     {
-        public static HitResult LinePointIntersect(Vector2 p1, Vector2 p2, Vector2 p0, double rad, HitType type)
+        public static HitResult LinePointIntersect(Vector2 p1, Vector2 p2, Item item, HitType type)
         {
+            var p0 = item.Position;
+            var rad = item.Radius;
+
             var v = new Vector2(p2.Y - p1.Y, -(p2.X - p1.X)); // perpendicular vector
             var d = Math.Abs((p2.X - p1.X) * (p1.Y - p0.Y) - (p1.X - p0.X) * (p2.Y - p1.Y));
             d = d/v.Length;
-            if (d > rad) { return HitResult.None; }
+            if (d > rad*2)
+            {
+                return HitResult.None;
+            }
 
             v.Normalize();
             v.Scale(d);
@@ -28,7 +35,7 @@ namespace DeepRL.Helpers
             }
             if (ua > 0.0 && ua < 1.0)
             {
-                return new HitResult(ua, up, type);
+                return new HitResult(ua, up, type, item);
             }
             return HitResult.None;
         }

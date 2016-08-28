@@ -30,7 +30,7 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Ellipse Margin="-5" Width="10" Height="10" Fill="DarkRed">
+                    <Ellipse Margin="-10" Width="20" Height="20" Fill="LawnGreen">
                         <Ellipse.RenderTransform>
                             <TranslateTransform X="{Binding Position.X}" Y="{Binding Position.Y}"></TranslateTransform>
                         </Ellipse.RenderTransform>
@@ -46,7 +46,7 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Ellipse Margin="-5" Width="10" Height="10" Fill="Green">
+                    <Ellipse Margin="-10" Width="20" Height="20" Fill="OrangeRed">
                         <Ellipse.RenderTransform>
                             <TranslateTransform X="{Binding Position.X}" Y="{Binding Position.Y}"></TranslateTransform>
                         </Ellipse.RenderTransform>
@@ -62,10 +62,10 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Grid Margin="-5" Width="10" Height="10">
+                    <Grid Margin="-10" Width="20" Height="20">
                         <Grid.RenderTransform>
                             <TransformGroup>
-                                <RotateTransform Angle="{Binding Angle, Converter={StaticResource DegreeConverter}}" />
+                                <RotateTransform Angle="{Binding Angle, Converter={StaticResource DegreeConverter}}" CenterX="10" CenterY="10" />
                                 <TranslateTransform X="{Binding Position.X}" Y="{Binding Position.Y}"></TranslateTransform>
                             </TransformGroup>
                         </Grid.RenderTransform>
@@ -73,7 +73,7 @@
                         <ItemsControl ItemsSource="{Binding Eyes}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <Canvas Margin="5"/>
+                                    <Canvas Margin="10"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
