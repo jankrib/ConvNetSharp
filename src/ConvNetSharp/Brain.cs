@@ -119,7 +119,7 @@ namespace ConvNetSharp
             _net.AddLayer(new InputLayer(1, 1, _numStates));
             _net.AddLayer(new FullyConnLayer(50, Activation.Relu));
             _net.AddLayer(new FullyConnLayer(50, Activation.Relu));
-            _net.AddLayer(new SoftmaxLayer(_numActions));
+            _net.AddLayer(new RegressionLayer(_numActions));
 
 
             _trainer = new Trainer(_net);
