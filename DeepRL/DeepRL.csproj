@@ -55,10 +55,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\HitTypeColorConverter.cs" />
     <Compile Include="Converters\DegreeConverter.cs" />
     <Compile Include="Helpers\HitResult.cs" />
     <Compile Include="Helpers\Raycaster.cs" />
     <Compile Include="Model\Agent.cs" />
+    <Compile Include="Model\Eye.cs" />
     <Compile Include="Model\Fruit.cs" />
     <Compile Include="Model\Item.cs" />
     <Compile Include="Helpers\Vector2.cs" />

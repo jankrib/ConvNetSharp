@@ -70,6 +70,25 @@
                             </TransformGroup>
                         </Grid.RenderTransform>
                         <Rectangle Fill="Blue"></Rectangle>
+                        <ItemsControl ItemsSource="{Binding Eyes}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas Margin="5"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Line X1="0" Y1="0" X2="{Binding SensedProximity}" Y2="0" Stroke="{Binding HitType, Converter={StaticResource HitTypeColorConverter}}" StrokeThickness="1">
+                                        <Line.RenderTransform>
+                                            <TransformGroup>
+                                                <RotateTransform Angle="90"/>
+                                                <RotateTransform Angle="{Binding Angle, Converter={StaticResource DegreeConverter}}" />
+                                            </TransformGroup>
+                                        </Line.RenderTransform>
+                                    </Line>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

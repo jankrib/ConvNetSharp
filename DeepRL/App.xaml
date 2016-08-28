@@ -7,5 +7,6 @@
     <Application.Resources>
 
         <converters:DegreeConverter x:Key="DegreeConverter" />
+        <converters:HitTypeColorConverter x:Key="HitTypeColorConverter" />
     </Application.Resources>
 </Application>

@@ -10,7 +10,16 @@ namespace DeepRL.Model
 {
     public class Agent:Item
     {
-        public WheelRotationSpeed Wheels { get; set; }
+        private int _actionIndex = 0;
+        public WheelRotationSpeed Wheels 
+        {
+            get
+            {
+                return _actions[_actionIndex];
+            }  
+        } 
+
+        public Eye[] Eyes { get; set; }
 
         private Brain _brain;
 
@@ -45,12 +54,69 @@ namespace DeepRL.Model
         public Agent(Vector2 position) 
             : base(position)
         {
+            Eyes = new Eye[9];
+            for (var k = 0; k < 9; k++)
+            {
+                Eyes[k] = new Eye((k - 3) * 0.25);
+            }
+
             var numInputs = 27; // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
             var numActions = _actions.Length; // possible angles agent can turn
             
-            _brain = new Brain(numInputs, numActions);
+            _brain = new Brain(numInputs, numActions)
+            {
+                Learning = true
+            };
 
-            Wheels = _actions[0];
+            
+        }
+
+        public void Forward()
+        {
+            double[] inputs = new double[27];
+            var num_eyes = Eyes.Length;
+
+            for (int i = 0; i < num_eyes; i++)
+            {
+                var eye = Eyes[i];
+                var prox = eye.SensedProximity/eye.MaxRange;
+
+                inputs[i * 3 + 0] = eye.HitType == HitType.Wall ? prox : 1.0;
+                inputs[i * 3 + 1] = eye.HitType == HitType.Fruit ? prox : 1.0;
+                inputs[i * 3 + 2] = eye.HitType == HitType.Poison ? prox : 1.0;
+            }
+
+            int actionIndex = _brain.Forward(inputs);
+
+            _actionIndex = actionIndex;
+        }
+
+        public void Backward()
+        {
+            var proximity_reward = 0.0;
+            var num_eyes = Eyes.Length;
+            for (var i = 0; i < num_eyes; i++)
+            {
+                var e = Eyes[i];
+                // agents dont like to see walls, especially up close
+                proximity_reward += e.HitType == HitType.Wall ? e.SensedProximity / e.MaxRange : 1.0;
+            }
+            proximity_reward = proximity_reward / num_eyes;
+            proximity_reward = Math.Min(1.0, proximity_reward * 2);
+
+            // agents like to go straight forward
+            var forward_reward = 0.0;
+            if (_actionIndex == 0 && proximity_reward > 0.75)
+                forward_reward = 0.1 * proximity_reward;
+
+            // agents like to eat good things
+            //var digestion_reward = this.digestion_signal;
+            //this.digestion_signal = 0.0;
+
+            var reward = proximity_reward + forward_reward;// + digestion_reward;
+
+            // pass to brain for learning
+            _brain.Backward(reward);
         }
 
         public struct WheelRotationSpeed

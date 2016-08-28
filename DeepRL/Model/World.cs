@@ -53,6 +53,33 @@ namespace DeepRL.Model
         {
             foreach (var agent in Agents)
             {
+                //Update inputs
+                for (int i = 0; i < 9; i++)
+                {
+                    var eye = agent.Eyes[i];
+
+                    var eyeDir = new Vector2(eye.MaxRange * Math.Sin(agent.Angle + eye.Angle),
+                               eye.MaxRange * Math.Cos(agent.Angle + eye.Angle));
+
+                    var eyeHit = Collide(agent.Position, eyeDir, true, true);
+
+                    if (eyeHit.Type != HitType.None)
+                    {
+                        eye.SensedProximity = eyeHit.Distance * eye.MaxRange;
+                        eye.HitType = eyeHit.Type;
+                    }
+                    else
+                    {
+                        eye.SensedProximity = eye.MaxRange;
+                        eye.HitType = HitType.None;
+                    }
+                }
+
+                //Think about it
+                agent.Forward();
+
+
+                //Update world
                 var oldPosition = agent.Position;
                 var oldAngle = agent.Angle;
 
@@ -75,6 +102,9 @@ namespace DeepRL.Model
                 {
                     
                 }
+
+                //Learn
+                agent.Backward();
             }
 
             OnAfterTick();
@@ -90,10 +120,23 @@ namespace DeepRL.Model
                 {
                     var res = Raycaster.LineIntersect(position, position + ray, wall.P1, wall.P2, HitType.Wall);
 
-                    if (res.Type != HitType.None && (minres == HitResult.None || minres.Distance > res.Distance))
-                    {
-                        minres = res;
-                    }
+                    minres = HitResult.Best(minres, res);
+                }
+            }
+
+            if (checkItems)
+            {
+                foreach (var fruit in Fruits)
+                {
+                    var res = Raycaster.LinePointIntersect(position, position + ray, fruit.Position, fruit.Radius, HitType.Fruit);
+
+                    minres = HitResult.Best(minres, res);
+                }
+                foreach (var poison in Poisons)
+                {
+                    var res = Raycaster.LinePointIntersect(position, position + ray, poison.Position, poison.Radius, HitType.Poison);
+
+                    minres = HitResult.Best(minres, res);
                 }
             }
 
@@ -118,7 +161,7 @@ namespace DeepRL.Model
             {
                 //TODO calculate dt
                 Update(0.1);
-                Thread.Sleep(50);
+                Thread.Sleep(10);
             }
         }
 

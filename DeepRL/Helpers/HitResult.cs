@@ -9,7 +9,9 @@ namespace DeepRL.Helpers
     public enum HitType
     {
         None,
-        Wall
+        Wall,
+        Fruit,
+        Poison
     }
 
     public struct HitResult
@@ -40,6 +42,16 @@ namespace DeepRL.Helpers
         public static bool operator !=(HitResult a, HitResult b)
         {
             return !(a == b);
+        }
+
+        public static HitResult Best(HitResult a, HitResult b)
+        {
+            if (b.Type != HitType.None && (a == HitResult.None || a.Distance > b.Distance))
+            {
+                return b;
+            }
+
+            return a; 
         }
     }
 }
