@@ -11,16 +11,16 @@ namespace ConvNetSharp.DeepQLearning
         private List<int> _actionWindow;
         private double _epsilon = 1.0;
         private readonly double _epsilonMin = 0.05;
-        private readonly double _epsilonTestTime = 0.01;
+        private readonly double _epsilonTestTime = 0.05;
 
         private readonly int _experienceSize = 30000; //should work with 30000
         private int _forwardPasses;
 
-        private double _gamma = 0.8;
+        private double _gamma = 0.7;
         private double[] _lastInput;
         private readonly int _learningStepsBurnin = 3000;
 
-        private readonly int _learningStepsTotal = 100000;
+        private readonly int _learningStepsTotal = 200000;
 
         private readonly Net _net;
 
@@ -74,6 +74,7 @@ namespace ConvNetSharp.DeepQLearning
 
 
             _trainer = new Trainer(_net);
+            _trainer.LearningRate = 0.001;
             _trainer.Momentum = 0;
             _trainer.BatchSize = 64;
             _trainer.L2Decay = 0.01;
